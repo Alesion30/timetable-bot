@@ -1,12 +1,17 @@
 const express = require("express");
 const app = express();
-require('dotenv').config();
+require("dotenv").config();
 
 // ミドルウェア
 app.use(express.json());
-app.use(express.urlencoded({
-  extended: true
-}));
+app.use(
+  express.urlencoded({
+    extended: true,
+  })
+);
+
+// LINE アクセストークン
+const LINE_CHANNEL_ACCESS_TOKEN = process.env.LINE_CHANNEL_ACCESS_TOKEN;
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
@@ -14,9 +19,44 @@ app.get("/", (req, res) => {
 
 // LINE Webhook
 app.post("/webhook", async (req, res) => {
-  console.log(req?.body?.events[0].message)
-  res.send("HTTP POST request sent to the webhook URL!")
+  const events = req?.body?.events
+  if (events.length > 0) {
+    console.log(events[0].message);
+    const messageText = events[0].message?.text;
+    const replyToken = events[0].replyToken;
+
+    // オウム返しする（送られてきたメッセージをそのまま返す）
+    if (messageText !== undefined) {
+      await replyMessage(messageText, replyToken);
+    }
+  }
+
+  res.send("HTTP POST request sent to the webhook URL!");
 });
+
+// 返信する関数
+const replyMessage = async (text, replyToken) => {
+  const message = {
+    type: "text",
+    text: text,
+  };
+
+  // LINEサーバーに送るデータ
+  const postData = {
+    replyToken: replyToken,
+    messages: [message],
+  };
+
+  // LINEサーバーにデータを送信
+  await fetch("https://api.line.me/v2/bot/message/reply", {
+    method: "POST",
+    body: JSON.stringify(postData),
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${LINE_CHANNEL_ACCESS_TOKEN}`,
+    },
+  });
+};
 
 // 住所を取得する
 app.get("/address", async (req, res) => {
