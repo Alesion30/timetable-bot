@@ -14,12 +14,18 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
+const spring1 = require("./data/spring1.json");
+
+app.get("/timetable", (req, res) => {
+  res.json(spring1);
+});
+
 // 返信する関数
 const replyMessage = require("./utils/replyMessage");
 
 // LINE Webhook
 app.post("/webhook", async (req, res) => {
-  const events = req?.body?.events
+  const events = req?.body?.events;
   if (events.length > 0) {
     console.log(events[0].message);
     const messageText = events[0].message?.text;
