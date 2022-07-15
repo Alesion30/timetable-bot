@@ -14,10 +14,13 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-const spring1 = require("./data/spring1.json");
+// 次の授業情報を取得する関数
+const getNextLesson = require("./utils/getNextLesson");
 
 app.get("/timetable", (req, res) => {
-  res.json(spring1);
+  const date = new Date("2022-7-15 12:00:00");
+  const lesson = getNextLesson(date);
+  res.json(lesson);
 });
 
 // 返信する関数
