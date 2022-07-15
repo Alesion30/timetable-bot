@@ -34,9 +34,21 @@ app.post("/webhook", async (req, res) => {
     const messageText = events[0].message?.text;
     const replyToken = events[0].replyToken;
 
-    // オウム返しする（送られてきたメッセージをそのまま返す）
     if (messageText !== undefined) {
-      await replyMessage(messageText, replyToken);
+      if (
+        messageText.indexOf("次") !== -1 &&
+        messageText.indexOf("授業") !== -1
+      ) {
+        const now = new Date();
+        const lesson = getNextLesson(now);
+        if (lesson !== null) {
+          await replyMessage(`次の授業は、${lesson.name}です`, replyToken);
+        } else {
+          await replyMessage("次の授業はありません", replyToken);
+        }
+      } else {
+        await replyMessage("すみません、よくわかりません", replyToken);
+      }
     }
   }
 
