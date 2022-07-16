@@ -1,3 +1,5 @@
+const fetch = require("node-fetch");
+
 // LINE アクセストークン
 const LINE_CHANNEL_ACCESS_TOKEN = process.env.LINE_CHANNEL_ACCESS_TOKEN;
 
