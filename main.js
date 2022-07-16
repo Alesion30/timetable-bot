@@ -2,6 +2,8 @@ const express = require("express");
 const app = express();
 require("dotenv").config();
 
+const PORT = process.env.PORT || 3000;
+
 // ミドルウェア
 app.use(express.json());
 app.use(
@@ -85,6 +87,6 @@ app.get("/address", async (req, res) => {
   }
 });
 
-app.listen(3000, () => {
+app.listen(PORT, () => {
   console.log("Running at http://localhost:3000");
 });
