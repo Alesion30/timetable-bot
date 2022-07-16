@@ -46,6 +46,17 @@ app.post("/webhook", async (req, res) => {
         } else {
           await replyMessage("次の授業はありません", replyToken);
         }
+      } else if (
+        messageText.indexOf("次") !== -1 &&
+        messageText.indexOf("教室") !== -1
+      ) {
+        const now = new Date();
+        const lesson = getNextLesson(now);
+        if (lesson !== null) {
+          await replyMessage(`次の教室は、${lesson.place}です`, replyToken);
+        } else {
+          await replyMessage("次の授業はありません", replyToken);
+        }
       } else {
         await replyMessage("すみません、よくわかりません", replyToken);
       }
